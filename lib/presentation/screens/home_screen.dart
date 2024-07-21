@@ -208,7 +208,7 @@ class _WeatherDaySlide extends StatelessWidget {
             const Spacer(),
             Text('$index:00'),
             const Spacer(),
-            Icon(
+            const Icon(
               Icons.cloudy_snowing,
               color: Colors.blueGrey,
               size: 32,
@@ -261,15 +261,30 @@ class _CurrentWeather extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    ElevatedButton.icon(
-                      onPressed: () {},
-                      label: const Text(
-                        'Quillota',
-                        style: TextStyle(
-                          fontSize: 22,
+                    Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: ElevatedButton.icon(
+                            onPressed: () {},
+                            label: const Text(
+                              'Quillota',
+                              style: TextStyle(
+                                fontSize: 22,
+                              ),
+                            ),
+                            icon: const Icon(Icons.location_on),
+                          ),
                         ),
-                      ),
-                      icon: const Icon(Icons.location_on),
+                        Align(
+                            alignment: Alignment.topRight,
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: CircleBorder(),
+                                ),
+                                onPressed: () {},
+                                child: Icon(Icons.settings))),
+                      ],
                     ),
                     const Spacer(),
                     currentWeatherState.isLoading
