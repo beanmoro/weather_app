@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:weather_app/domain/entities/weather.dart';
 import 'package:weather_app/presentation/providers/weather_provider.dart';
 import 'package:weather_app/presentation/widgets/widgets.dart';
 
@@ -136,7 +140,7 @@ class _WeatherWeek extends StatelessWidget {
   }
 }
 
-class _WeatherOnDayByTime extends StatelessWidget {
+class _WeatherOnDayByTime extends ConsumerWidget {
   const _WeatherOnDayByTime({
     required this.colors,
   });
@@ -144,7 +148,12 @@ class _WeatherOnDayByTime extends StatelessWidget {
   final ColorScheme colors;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentWeatherState = ref.watch(weatherProvider);
+
+    final currentMinIndex =
+        ref.watch(weatherProvider.notifier).getCurrentMinIndex();
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SizedBox(
@@ -154,6 +163,8 @@ class _WeatherOnDayByTime extends StatelessWidget {
             itemCount: 24,
             itemBuilder: (context, index) {
               return _WeatherDaySlide(
+                minIndex: currentMinIndex,
+                weather: currentWeatherState.weather,
                 colors: colors,
                 index: index,
               );
@@ -167,13 +178,24 @@ class _WeatherDaySlide extends StatelessWidget {
   const _WeatherDaySlide({
     required this.colors,
     required this.index,
+    required this.minIndex,
+    required this.weather,
   });
 
   final ColorScheme colors;
   final int index;
+  final int minIndex;
+  final Weather? weather;
 
   @override
   Widget build(BuildContext context) {
+    // DateTime? currentTime =
+    //     DateTime.tryParse(weather!.time[minIndex + index] as String);
+
+    String timeFormatted = weather == null
+        ? ''
+        : DateFormat.Hm().format(weather!.time[minIndex + index + 1]);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 14),
       child: Container(
@@ -206,20 +228,48 @@ class _WeatherDaySlide extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Spacer(),
-            Text('$index:00'),
+            (weather == null)
+                ? _ShimmerLoading(colors: colors, width: 40, height: 14)
+                : Text(weather == null ? '...' : timeFormatted),
             const Spacer(),
-            const Icon(
-              Icons.cloudy_snowing,
-              color: Colors.blueGrey,
-              size: 32,
-            ),
+            (weather == null)
+                ? _ShimmerLoading(colors: colors, width: 32, height: 32)
+                : const Icon(
+                    Icons.cloudy_snowing,
+                    color: Colors.blueGrey,
+                    size: 32,
+                  ),
             const Spacer(),
-            Text('${20 - index}°C'),
+            (weather == null)
+                ? _ShimmerLoading(colors: colors, width: 40, height: 14)
+                : Text(
+                    '${weather == null ? '...' : weather!.temperature[minIndex + index + 1].toInt()}°C'),
             const Spacer()
           ],
         ),
       ),
     );
+  }
+}
+
+class _ShimmerLoading extends StatelessWidget {
+  const _ShimmerLoading({
+    required this.colors,
+    required this.width,
+    required this.height,
+  });
+
+  final ColorScheme colors;
+  final double width;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+        baseColor: colors.primary.withOpacity(0.25),
+        highlightColor: colors.primary.withOpacity(0.125),
+        direction: ShimmerDirection.ltr,
+        child: Container(width: width, height: height, color: Colors.grey));
   }
 }
 
@@ -288,7 +338,8 @@ class _CurrentWeather extends ConsumerWidget {
                     ),
                     const Spacer(),
                     currentWeatherState.isLoading
-                        ? const CircularProgressIndicator()
+                        ? LoadingAnimationWidget.horizontalRotatingDots(
+                            color: colors.primary, size: 64)
                         : Column(
                             children: [
                               const Icon(
