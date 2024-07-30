@@ -13,19 +13,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(
-      //     'WeatherApp',
-      //     style: textTheme.titleLarge,
-      //   ),
-      //   actions: [
-      //     IconButton(
-      //       onPressed: () {},
-      //       icon: const Icon(Icons.replay_outlined),
-      //     )
-      //   ],
-      // ),
+    return const Scaffold(
       body: _HomeView(),
     );
   }
@@ -63,9 +51,8 @@ class _HomeView extends StatelessWidget {
   }
 }
 
-class _WeatherWeek extends StatelessWidget {
+class _WeatherWeek extends ConsumerWidget {
   const _WeatherWeek({
-    super.key,
     required this.colors,
     required this.textStyle,
   });
@@ -74,7 +61,15 @@ class _WeatherWeek extends StatelessWidget {
   final TextTheme textStyle;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentWeatherState = ref.watch(weatherProvider);
+
+    // final currentMinIndex =
+    //     ref.watch(weatherProvider.notifier).getCurrentMinIndex();
+
+    final tag = Localizations.maybeLocaleOf(context)?.toLanguageTag();
+    print(tag);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 1.0),
       child: Container(
@@ -107,21 +102,86 @@ class _WeatherWeek extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           itemCount: 7,
           itemBuilder: (context, index) {
+            String currentDay = currentWeatherState.weatherDaily == null
+                ? ''
+                : DateFormat.E(tag)
+                    .add_d()
+                    .format(currentWeatherState.weatherDaily!.days[index]);
+
             return Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
               child: Row(
                 children: [
-                  Text('Lun 22', style: textStyle.labelLarge),
+                  (currentWeatherState.weatherDaily == null)
+                      ? Expanded(
+                          child: _ShimmerLoading(
+                              colors: colors, width: 40, height: 14))
+                      : Expanded(
+                          child: Text(
+                            '$currentDay',
+                            style: textStyle.labelLarge,
+                          ),
+                        ),
                   const Spacer(),
-                  Icon(
-                    Icons.sunny,
-                    color: Colors.orange,
-                  ),
+                  (currentWeatherState.weatherDaily == null)
+                      ? Expanded(
+                          child: _ShimmerLoading(
+                              colors: colors, width: 24, height: 24))
+                      : const Expanded(
+                          child: Icon(
+                            Icons.sunny,
+                            color: Colors.orange,
+                          ),
+                        ),
                   const Spacer(),
-                  Text('5°C', style: textStyle.labelLarge),
+                  (currentWeatherState.weatherDaily == null)
+                      ? Expanded(
+                          child: _ShimmerLoading(
+                              colors: colors, width: 20, height: 32))
+                      : Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.only(top: 8, bottom: 8),
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  bottomLeft: Radius.circular(20)),
+                              gradient: LinearGradient(colors: [
+                                Colors.lightBlue.withOpacity(0.5),
+                                colors.primaryContainer.withOpacity(0.1),
+                              ]),
+                            ),
+                            child: Text(
+                              '${currentWeatherState.weatherDaily!.minTemperature[index].toInt()}°C',
+                              style: textStyle.labelLarge,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
                   const Spacer(),
-                  Text('18°C', style: textStyle.labelLarge),
+                  (currentWeatherState.weatherDaily == null)
+                      ? Expanded(
+                          child: _ShimmerLoading(
+                              colors: colors, width: 20, height: 32))
+                      : Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.only(top: 8, bottom: 8),
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                  topRight: Radius.circular(20),
+                                  bottomRight: Radius.circular(20)),
+                              gradient: LinearGradient(colors: [
+                                colors.primaryContainer.withOpacity(0.1),
+                                Colors.orange.withOpacity(0.75)
+                              ]),
+                            ),
+                            child: Text(
+                              '${currentWeatherState.weatherDaily!.maxTemperature[index].toInt()}°C',
+                              style: textStyle.labelLarge,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
                 ],
               ),
             );
@@ -269,7 +329,14 @@ class _ShimmerLoading extends StatelessWidget {
         baseColor: colors.primary.withOpacity(0.25),
         highlightColor: colors.primary.withOpacity(0.125),
         direction: ShimmerDirection.ltr,
-        child: Container(width: width, height: height, color: Colors.grey));
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.0),
+            color: Colors.grey,
+          ),
+          width: width,
+          height: height,
+        ));
   }
 }
 
