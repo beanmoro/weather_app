@@ -1,1 +1,1 @@
-export 'custom_gradient.dart';
+export 'custom_linear_gradient.dart';

@@ -6,6 +6,7 @@ class Weather {
   final List<double> temperature;
   final List<double> apparentTemperature;
   final List<int> relativeHumidity;
+  final List<int> weatherCode;
 
   Weather({
     required this.timezone,
@@ -15,5 +16,6 @@ class Weather {
     required this.temperature,
     required this.apparentTemperature,
     required this.relativeHumidity,
+    required this.weatherCode,
   });
 }

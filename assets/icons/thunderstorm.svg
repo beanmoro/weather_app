@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   height="21.497602"
+   viewBox="0 -960 780 859.9041"
+   width="19.5"
+   fill="#ffffff"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="thunderstorm.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="14.894133"
+     inkscape:cx="7.6875908"
+     inkscape:cy="11.917444"
+     inkscape:window-width="1440"
+     inkscape:window-height="876"
+     inkscape:window-x="0"
+     inkscape:window-y="24"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer2" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer1"
+     inkscape:label="Layer 1"
+     transform="translate(-90,-90)">
+    <path
+       d="m 483.91763,-10.095927 88.24,-100.079903 -80,-40 104.46,-119.92 h 79.46 l -88.24,100.08 80,40 -104.46,119.919903 z m -240,0 88.24,-100.079903 -80,-40 104.46,-119.92 h 79.46 l -88.24,100.08 80,40 -104.46,119.919903 z"
+       id="path1-8"
+       style="display:inline;fill:#ffff00"
+       sodipodi:insensitive="true" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Cloud"
+     transform="translate(-90,-90)">
+    <path
+       d="m 300,-330 c -58.1,0 -107.62667,-20.47333 -148.58,-61.42 C 110.47333,-432.37333 90,-481.9 90,-540 c 0,-53.54 17.88333,-100.07667 53.65,-139.61 35.77333,-39.54 80.27333,-62.59333 133.5,-69.16 20.56667,-37.74 48.71,-67.38 84.43,-88.92 35.71333,-21.54 75.18667,-32.31 118.42,-32.31 58.72,0 109.47667,19.10333 152.27,57.31 42.79333,38.20667 68.21667,85.84667 76.27,142.92 47.54,3.48667 86.33333,21.52667 116.38,54.12 30.05333,32.58667 45.08,71.13667 45.08,115.65 0,47.18 -16.54,87.30667 -49.62,120.38 C 787.30667,-346.54 747.18,-330 700,-330 Z"
+       id="path1"
+       sodipodi:nodetypes="scscccssccscss"
+       style="display:inline;fill:#ffffff" />
+  </g>
+</svg>

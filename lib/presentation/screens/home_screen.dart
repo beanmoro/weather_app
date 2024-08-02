@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:weather_app/config/constants/weather_code_icons.dart';
 import 'package:weather_app/domain/entities/weather.dart';
 import 'package:weather_app/presentation/providers/weather_provider.dart';
+import 'package:weather_app/presentation/widgets/custom_radial_gradient.dart';
 import 'package:weather_app/presentation/widgets/widgets.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -43,7 +46,10 @@ class _HomeView extends StatelessWidget {
             _WeatherWeek(
               colors: colors,
               textStyle: textStyles,
-            )
+            ),
+            SizedBox(
+              height: 100,
+            ),
           ],
         ),
       ),
@@ -68,7 +74,6 @@ class _WeatherWeek extends ConsumerWidget {
     //     ref.watch(weatherProvider.notifier).getCurrentMinIndex();
 
     final tag = Localizations.maybeLocaleOf(context)?.toLanguageTag();
-    print(tag);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 1.0),
@@ -78,11 +83,12 @@ class _WeatherWeek extends ConsumerWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
+            stops: [0.0, 0.2],
             colors: [
               colors.brightness == Brightness.light
                   ? Colors.white
                   : colors.primaryContainer,
-              colors.secondaryContainer
+              colors.secondaryContainer,
             ],
           ),
           boxShadow: [
@@ -110,7 +116,7 @@ class _WeatherWeek extends ConsumerWidget {
 
             return Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
               child: Row(
                 children: [
                   (currentWeatherState.weatherDaily == null)
@@ -119,7 +125,7 @@ class _WeatherWeek extends ConsumerWidget {
                               colors: colors, width: 40, height: 14))
                       : Expanded(
                           child: Text(
-                            '$currentDay',
+                            currentDay,
                             style: textStyle.labelLarge,
                           ),
                         ),
@@ -128,10 +134,17 @@ class _WeatherWeek extends ConsumerWidget {
                       ? Expanded(
                           child: _ShimmerLoading(
                               colors: colors, width: 24, height: 24))
-                      : const Expanded(
-                          child: Icon(
-                            Icons.sunny,
-                            color: Colors.orange,
+                      : Expanded(
+                          // child: Icon(
+                          //   Icons.sunny,
+                          //   color: Colors.orange,
+                          // ),
+                          child: SvgPicture.asset(
+                            WeatherCodeIcons.getIcon(currentWeatherState
+                                .weatherDaily!.weatherCode[index]
+                                .toInt()),
+                            // 'assets/icons/partly_cloudy_day.svg',
+                            height: 32,
                           ),
                         ),
                   const Spacer(),
@@ -254,7 +267,7 @@ class _WeatherDaySlide extends StatelessWidget {
 
     String timeFormatted = weather == null
         ? ''
-        : DateFormat.Hm().format(weather!.time[minIndex + index + 1]);
+        : DateFormat.Hm().format(weather!.time[minIndex + index]);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 14),
@@ -264,6 +277,7 @@ class _WeatherDaySlide extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
+            stops: const [0.0, 0.7],
             colors: [
               colors.brightness == Brightness.light
                   ? Colors.white
@@ -294,16 +308,22 @@ class _WeatherDaySlide extends StatelessWidget {
             const Spacer(),
             (weather == null)
                 ? _ShimmerLoading(colors: colors, width: 32, height: 32)
-                : const Icon(
-                    Icons.cloudy_snowing,
-                    color: Colors.blueGrey,
-                    size: 32,
+                // : const Icon(
+                //     Icons.cloudy_snowing,
+                //     color: Colors.blueGrey,
+                //     size: 32,
+                //   ),
+                : SvgPicture.asset(
+                    // 'assets/icons/partly_cloudy_day.svg',
+                    WeatherCodeIcons.getIcon(
+                        weather!.weatherCode[minIndex + index]),
+                    height: 32,
                   ),
             const Spacer(),
             (weather == null)
                 ? _ShimmerLoading(colors: colors, width: 40, height: 14)
                 : Text(
-                    '${weather == null ? '...' : weather!.temperature[minIndex + index + 1].toInt()}°C'),
+                    '${weather == null ? '...' : weather!.temperature[minIndex + index].toInt()}°C'),
             const Spacer()
           ],
         ),
@@ -353,6 +373,9 @@ class _CurrentWeather extends ConsumerWidget {
     final currentTemperature =
         ref.watch(weatherProvider.notifier).getCurrentTemperature();
 
+    final currentWeatherCode =
+        ref.watch(weatherProvider.notifier).getCurrentWeatherCode();
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(0),
       child: Container(
@@ -360,7 +383,16 @@ class _CurrentWeather extends ConsumerWidget {
         height: MediaQuery.of(context).size.height * 0.5,
         child: Stack(
           children: [
-            CustomGradient(
+            CustomRadialGradient(
+              stops: [0.1, 1.0],
+              colors: [
+                colors.primaryContainer,
+                colors.brightness == Brightness.light
+                    ? const Color.fromARGB(0, 255, 255, 255)
+                    : Colors.transparent
+              ],
+            ),
+            CustomLinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               stops: const [0.1, 1.0],
@@ -409,10 +441,15 @@ class _CurrentWeather extends ConsumerWidget {
                             color: colors.primary, size: 64)
                         : Column(
                             children: [
-                              const Icon(
-                                Icons.sunny,
-                                color: Colors.orange,
-                                size: 128,
+                              // const Icon(
+                              //   Icons.sunny,
+                              //   color: Colors.orange,
+                              //   size: 128,
+                              // ),
+                              SvgPicture.asset(
+                                WeatherCodeIcons.getIcon(currentWeatherCode),
+                                // 'assets/icons/partly_cloudy_day.svg',
+                                height: 128,
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

@@ -16,14 +16,18 @@ class WeatherMapper {
         List<double>.from(hourly['apparent_temperature'].map((x) => x));
     List<int> relativeHumidity =
         List<int>.from(hourly['relative_humidity_2m'].map((x) => x));
+    List<int> weatherCode =
+        List<int>.from(hourly['weather_code'].map((x) => x));
 
     return Weather(
-        timezone: json['timezone'],
-        timezoneAbreviation: json['timezone_abbreviation'],
-        hourlyUnits: hourlyUnits,
-        time: time,
-        temperature: temperature,
-        apparentTemperature: apparentTemperature,
-        relativeHumidity: relativeHumidity);
+      timezone: json['timezone'],
+      timezoneAbreviation: json['timezone_abbreviation'],
+      hourlyUnits: hourlyUnits,
+      time: time,
+      temperature: temperature,
+      apparentTemperature: apparentTemperature,
+      relativeHumidity: relativeHumidity,
+      weatherCode: weatherCode,
+    );
   }
 }

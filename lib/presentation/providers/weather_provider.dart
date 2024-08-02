@@ -56,6 +56,13 @@ class WeatherNotifier extends StateNotifier<WeatherState> {
     int index = _findClosestTimeIndex(state.weather!.time);
     return index;
   }
+
+  int getCurrentWeatherCode() {
+    if (state.weather == null) return -1;
+    int index = getCurrentMinIndex();
+    print('>>> ${state.weather!.weatherCode[index].toInt()}');
+    return state.weather!.weatherCode[index].toInt();
+  }
 }
 
 class WeatherState {

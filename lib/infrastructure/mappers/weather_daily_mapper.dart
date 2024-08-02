@@ -14,13 +14,16 @@ class WeatherDailyMapper {
         List<double>.from(daily['temperature_2m_min'].map((x) => x));
     List<double> maxTemperature =
         List<double>.from(daily['temperature_2m_max'].map((x) => x));
+    List<int> weatherCode = List<int>.from(daily['weather_code'].map((x) => x));
 
     return WeatherDaily(
-        timezone: json['timezone'],
-        timezoneAbreviation: json['timezone_abbreviation'],
-        dailyUnits: dailyUnits,
-        days: days,
-        minTemperature: minTemperature,
-        maxTemperature: maxTemperature);
+      timezone: json['timezone'],
+      timezoneAbreviation: json['timezone_abbreviation'],
+      dailyUnits: dailyUnits,
+      days: days,
+      minTemperature: minTemperature,
+      maxTemperature: maxTemperature,
+      weatherCode: weatherCode,
+    );
   }
 }
