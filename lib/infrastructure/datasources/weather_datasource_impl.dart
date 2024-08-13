@@ -3,6 +3,8 @@ import 'package:dio/dio.dart';
 import 'package:weather_app/infrastructure/mappers/weather_daily_mapper.dart';
 import 'package:weather_app/infrastructure/mappers/weather_mapper.dart';
 
+import '../../domain/entities/location.dart';
+
 class WeatherDatasourceImpl extends WeatherDatasource {
   late final Dio dio;
 
@@ -11,7 +13,7 @@ class WeatherDatasourceImpl extends WeatherDatasource {
             Dio(BaseOptions(baseUrl: 'https://api.open-meteo.com/v1/forecast'));
 
   @override
-  Future<Weather> getCurrentWeather() async {
+  Future<Weather> getCurrentWeather(Location location) async {
     try {
       final response = await dio.get(
           '?latitude=-32.8834&longitude=-71.2488&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code&timezone=auto&forecast_days=3');
@@ -23,7 +25,7 @@ class WeatherDatasourceImpl extends WeatherDatasource {
   }
 
   @override
-  Future<WeatherDaily> getWeekWeather() async {
+  Future<WeatherDaily> getWeekWeather(Location location) async {
     try {
       final response = await dio.get(
           '?latitude=-32.8834&longitude=-71.2488&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto');

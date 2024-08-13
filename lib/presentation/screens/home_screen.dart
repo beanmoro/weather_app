@@ -47,7 +47,7 @@ class _HomeView extends StatelessWidget {
               colors: colors,
               textStyle: textStyles,
             ),
-            SizedBox(
+            const SizedBox(
               height: 100,
             ),
           ],
@@ -83,7 +83,7 @@ class _WeatherWeek extends ConsumerWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            stops: [0.0, 0.2],
+            stops: const [0.0, 0.2],
             colors: [
               colors.brightness == Brightness.light
                   ? Colors.white
@@ -119,7 +119,8 @@ class _WeatherWeek extends ConsumerWidget {
                   const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
               child: Row(
                 children: [
-                  (currentWeatherState.weatherDaily == null)
+                  (currentWeatherState.weatherDaily == null ||
+                          currentWeatherState.isLoading)
                       ? Expanded(
                           child: _ShimmerLoading(
                               colors: colors, width: 40, height: 14))
@@ -130,7 +131,8 @@ class _WeatherWeek extends ConsumerWidget {
                           ),
                         ),
                   const Spacer(),
-                  (currentWeatherState.weatherDaily == null)
+                  (currentWeatherState.weatherDaily == null ||
+                          currentWeatherState.isLoading)
                       ? Expanded(
                           child: _ShimmerLoading(
                               colors: colors, width: 24, height: 24))
@@ -148,7 +150,8 @@ class _WeatherWeek extends ConsumerWidget {
                           ),
                         ),
                   const Spacer(),
-                  (currentWeatherState.weatherDaily == null)
+                  (currentWeatherState.weatherDaily == null ||
+                          currentWeatherState.isLoading)
                       ? Expanded(
                           child: _ShimmerLoading(
                               colors: colors, width: 20, height: 32))
@@ -172,7 +175,8 @@ class _WeatherWeek extends ConsumerWidget {
                           ),
                         ),
                   const Spacer(),
-                  (currentWeatherState.weatherDaily == null)
+                  (currentWeatherState.weatherDaily == null ||
+                          currentWeatherState.isLoading)
                       ? Expanded(
                           child: _ShimmerLoading(
                               colors: colors, width: 20, height: 32))
@@ -238,6 +242,7 @@ class _WeatherOnDayByTime extends ConsumerWidget {
               return _WeatherDaySlide(
                 minIndex: currentMinIndex,
                 weather: currentWeatherState.weather,
+                isLoading: currentWeatherState.isLoading,
                 colors: colors,
                 index: index,
               );
@@ -248,17 +253,18 @@ class _WeatherOnDayByTime extends ConsumerWidget {
 }
 
 class _WeatherDaySlide extends StatelessWidget {
-  const _WeatherDaySlide({
-    required this.colors,
-    required this.index,
-    required this.minIndex,
-    required this.weather,
-  });
+  const _WeatherDaySlide(
+      {required this.colors,
+      required this.index,
+      required this.minIndex,
+      required this.weather,
+      required this.isLoading});
 
   final ColorScheme colors;
   final int index;
   final int minIndex;
   final Weather? weather;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -302,11 +308,11 @@ class _WeatherDaySlide extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Spacer(),
-            (weather == null)
+            (weather == null || isLoading)
                 ? _ShimmerLoading(colors: colors, width: 40, height: 14)
                 : Text(weather == null ? '...' : timeFormatted),
             const Spacer(),
-            (weather == null)
+            (weather == null || isLoading)
                 ? _ShimmerLoading(colors: colors, width: 32, height: 32)
                 // : const Icon(
                 //     Icons.cloudy_snowing,
@@ -320,7 +326,7 @@ class _WeatherDaySlide extends StatelessWidget {
                     height: 32,
                   ),
             const Spacer(),
-            (weather == null)
+            (weather == null || isLoading)
                 ? _ShimmerLoading(colors: colors, width: 40, height: 14)
                 : Text(
                     '${weather == null ? '...' : weather!.temperature[minIndex + index].toInt()}°C'),
@@ -378,13 +384,13 @@ class _CurrentWeather extends ConsumerWidget {
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(0),
-      child: Container(
+      child: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height * 0.5,
         child: Stack(
           children: [
             CustomRadialGradient(
-              stops: [0.1, 1.0],
+              stops: const [0.1, 1.0],
               colors: [
                 colors.primaryContainer,
                 colors.brightness == Brightness.light
@@ -415,13 +421,21 @@ class _CurrentWeather extends ConsumerWidget {
                         Align(
                           alignment: Alignment.topCenter,
                           child: ElevatedButton.icon(
-                            onPressed: () {},
-                            label: const Text(
-                              'Quillota',
-                              style: TextStyle(
-                                fontSize: 22,
-                              ),
-                            ),
+                            onPressed: () async {
+                              await ref
+                                  .read(weatherProvider.notifier)
+                                  .refreshWeather();
+                            },
+                            label: currentWeatherState.isLoading
+                                ? LoadingAnimationWidget.waveDots(
+                                    color: colors.primary, size: 32)
+                                : Text(
+                                    currentWeatherState
+                                        .currentLocation!.cityName,
+                                    style: const TextStyle(
+                                      fontSize: 22,
+                                    ),
+                                  ),
                             icon: const Icon(Icons.location_on),
                           ),
                         ),
@@ -429,15 +443,15 @@ class _CurrentWeather extends ConsumerWidget {
                             alignment: Alignment.topRight,
                             child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  shape: CircleBorder(),
+                                  shape: const CircleBorder(),
                                 ),
                                 onPressed: () {},
-                                child: Icon(Icons.settings))),
+                                child: const Icon(Icons.settings))),
                       ],
                     ),
                     const Spacer(),
                     currentWeatherState.isLoading
-                        ? LoadingAnimationWidget.horizontalRotatingDots(
+                        ? LoadingAnimationWidget.hexagonDots(
                             color: colors.primary, size: 64)
                         : Column(
                             children: [

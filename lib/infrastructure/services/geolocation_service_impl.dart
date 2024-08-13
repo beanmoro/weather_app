@@ -1,3 +1,4 @@
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:weather_app/domain/services/geolocation_service.dart';
 
@@ -25,5 +26,22 @@ class GeolocationServiceImpl extends GeolocationService {
     }
 
     return 0;
+  }
+
+  @override
+  Future<Position> getCurrentPosition() async {
+    final currentPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    return currentPosition;
+  }
+
+  @override
+  Future<String?> getCurrentCity(Position position) async {
+    final placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+
+    final currentCity = placemarks[0];
+
+    return currentCity.locality!;
   }
 }
