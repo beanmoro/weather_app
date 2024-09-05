@@ -6,24 +6,103 @@ import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:weather_app/config/constants/weather_code_icons.dart';
+import 'package:weather_app/config/helpers/conversor.dart';
 import 'package:weather_app/domain/entities/weather.dart';
 import 'package:weather_app/presentation/providers/weather_provider.dart';
 import 'package:weather_app/presentation/widgets/custom_radial_gradient.dart';
 import 'package:weather_app/presentation/widgets/widgets.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    ref.read(weatherProvider.notifier).getTempUnit();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final textStyles = Theme.of(context).textTheme;
+
+    TempUnit tempUnit = ref.read(weatherProvider.notifier).getTempUnit();
+
     return Scaffold(
       body: const _HomeView(),
       endDrawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            DrawerHeader(child: Text('Drawer Header')),
-            ListTile(title: Text('Temperature Unit'))
+            DrawerHeader(
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  stops: const [0.1, 1.0],
+                  colors: [
+                    colors.primaryContainer,
+                    colors.brightness == Brightness.light
+                        ? const Color.fromARGB(0, 255, 255, 255)
+                        : Colors.transparent
+                  ],
+                )),
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Spacer(),
+                    Text('Configuration', style: textStyles.headlineMedium),
+                  ],
+                )),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Temperature Unit',
+                    textAlign: TextAlign.start,
+                    style: textStyles.bodyLarge,
+                  ),
+                  RadioListTile(
+                      title: Text(
+                        'Celsius',
+                        style: textStyles.labelLarge,
+                      ),
+                      value: TempUnit.celsius,
+                      groupValue: tempUnit,
+                      onChanged: (TempUnit? value) {
+                        ref.read(weatherProvider.notifier).setTempUnit(value!);
+                        setState(() {});
+                      }),
+                  RadioListTile(
+                      title: Text(
+                        'Fahrenheit',
+                        style: textStyles.labelLarge,
+                      ),
+                      value: TempUnit.fahrenheit,
+                      groupValue: tempUnit,
+                      onChanged: (TempUnit? value) {
+                        ref.read(weatherProvider.notifier).setTempUnit(value!);
+                        setState(() {});
+                      }),
+                ],
+              ),
+            ),
+            const Divider(),
           ],
         ),
       ),
@@ -177,7 +256,11 @@ class _WeatherWeek extends ConsumerWidget {
                               ]),
                             ),
                             child: Text(
-                              '${currentWeatherState.weatherDaily!.minTemperature[index].toInt()}°C',
+                              currentWeatherState.tempUnit ==
+                                      TempUnit.fahrenheit
+                                  ? '${Conversor.celsiusToFahrenheit(currentWeatherState.weatherDaily!.minTemperature[index]).toInt()}°F'
+                                  : '${currentWeatherState.weatherDaily!.minTemperature[index].toInt()}°C',
+                              //'${currentWeatherState.weatherDaily!.minTemperature[index].toInt()}${currentWeatherState.tempUnit == TempUnit.fahrenheit ? '°F' : '°C'}',
                               style: textStyle.labelLarge,
                               textAlign: TextAlign.center,
                             ),
@@ -202,7 +285,10 @@ class _WeatherWeek extends ConsumerWidget {
                               ]),
                             ),
                             child: Text(
-                              '${currentWeatherState.weatherDaily!.maxTemperature[index].toInt()}°C',
+                              currentWeatherState.tempUnit ==
+                                      TempUnit.fahrenheit
+                                  ? '${Conversor.celsiusToFahrenheit(currentWeatherState.weatherDaily!.maxTemperature[index]).toInt()}°F'
+                                  : '${currentWeatherState.weatherDaily!.maxTemperature[index].toInt()}°C',
                               style: textStyle.labelLarge,
                               textAlign: TextAlign.center,
                             ),
@@ -252,6 +338,7 @@ class _WeatherOnDayByTime extends ConsumerWidget {
                 minIndex: currentMinIndex,
                 weather: currentWeatherState.weather,
                 isLoading: currentWeatherState.isLoading,
+                tempUnit: currentWeatherState.tempUnit,
                 colors: colors,
                 index: index,
               );
@@ -267,12 +354,14 @@ class _WeatherDaySlide extends StatelessWidget {
       required this.index,
       required this.minIndex,
       required this.weather,
-      required this.isLoading});
+      required this.isLoading,
+      required this.tempUnit});
 
   final ColorScheme colors;
   final int index;
   final int minIndex;
   final Weather? weather;
+  final TempUnit? tempUnit;
   final bool isLoading;
 
   @override
@@ -338,7 +427,12 @@ class _WeatherDaySlide extends StatelessWidget {
             (weather == null || isLoading)
                 ? _ShimmerLoading(colors: colors, width: 40, height: 14)
                 : Text(
-                    '${weather == null ? '...' : weather!.temperature[minIndex + index].toInt()}°C'),
+                    tempUnit == TempUnit.fahrenheit
+                        ? '${Conversor.celsiusToFahrenheit(weather!.temperature[minIndex + index]).toInt()}°F'
+                        : '${weather!.temperature[minIndex + index].toInt()}°C',
+                  ),
+
+            //'${weather == null ? '...' : weather!.temperature[minIndex + index].toInt()}${tempUnit == TempUnit.fahrenheit ? '°F' : '°C'}'),
             const Spacer()
           ],
         ),
@@ -480,12 +574,21 @@ class _CurrentWeather extends ConsumerWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('$currentTemperature',
+                                  Text(
+                                      currentWeatherState.tempUnit ==
+                                              TempUnit.fahrenheit
+                                          ? '${Conversor.celsiusToFahrenheit(currentTemperature.toDouble()).toInt()}'
+                                          : '${currentTemperature}',
+
+                                      //'$currentTemperature',
                                       style: textStyles.displayLarge),
                                   Padding(
                                     padding: const EdgeInsets.only(top: 2.0),
                                     child: Text(
-                                      '°C',
+                                      currentWeatherState.tempUnit ==
+                                              TempUnit.fahrenheit
+                                          ? '°F'
+                                          : '°C',
                                       style: textStyles.headlineSmall,
                                     ),
                                   ),
