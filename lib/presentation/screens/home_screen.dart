@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
@@ -15,9 +16,17 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    return const Scaffold(
-      body: _HomeView(),
+    return Scaffold(
+      body: const _HomeView(),
+      endDrawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(child: Text('Drawer Header')),
+            ListTile(title: Text('Temperature Unit'))
+          ],
+        ),
+      ),
     );
   }
 }
@@ -445,7 +454,9 @@ class _CurrentWeather extends ConsumerWidget {
                                 style: ElevatedButton.styleFrom(
                                   shape: const CircleBorder(),
                                 ),
-                                onPressed: () {},
+                                onPressed: () {
+                                  Scaffold.of(context).openEndDrawer();
+                                },
                                 child: const Icon(Icons.settings))),
                       ],
                     ),
