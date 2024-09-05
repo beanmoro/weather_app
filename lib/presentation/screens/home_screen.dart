@@ -8,6 +8,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:weather_app/config/constants/weather_code_icons.dart';
 import 'package:weather_app/config/helpers/conversor.dart';
 import 'package:weather_app/domain/entities/weather.dart';
+import 'package:weather_app/generated/l10n.dart';
 import 'package:weather_app/presentation/providers/weather_provider.dart';
 import 'package:weather_app/presentation/widgets/custom_radial_gradient.dart';
 import 'package:weather_app/presentation/widgets/widgets.dart';
@@ -23,7 +24,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-
     ref.read(weatherProvider.notifier).getTempUnit();
   }
 
@@ -64,7 +64,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Spacer(),
-                    Text('Configuration', style: textStyles.headlineMedium),
+                    Text(S.current.drawer_config,
+                        style: textStyles.headlineMedium),
                   ],
                 )),
             Padding(
@@ -73,7 +74,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Temperature Unit',
+                    S.current.drawer_temperature_unit,
                     textAlign: TextAlign.start,
                     style: textStyles.bodyLarge,
                   ),
@@ -101,6 +102,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       }),
                 ],
               ),
+            ),
+            const Divider(),
+            ListTile(
+              title: Text(S.current.drawer_about_app),
+              onTap: () {},
             ),
             const Divider(),
           ],
@@ -161,7 +167,7 @@ class _WeatherWeek extends ConsumerWidget {
     // final currentMinIndex =
     //     ref.watch(weatherProvider.notifier).getCurrentMinIndex();
 
-    final tag = Localizations.maybeLocaleOf(context)?.toLanguageTag();
+    String tag = Localizations.maybeLocaleOf(context)!.toLanguageTag();
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 1.0),
@@ -198,7 +204,7 @@ class _WeatherWeek extends ConsumerWidget {
           itemBuilder: (context, index) {
             String currentDay = currentWeatherState.weatherDaily == null
                 ? ''
-                : DateFormat.E(tag)
+                : DateFormat.E()
                     .add_d()
                     .format(currentWeatherState.weatherDaily!.days[index]);
 

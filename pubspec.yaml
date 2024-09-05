@@ -21,6 +21,8 @@ dependencies:
   loading_animation_widget: ^1.2.1
   shared_preferences: ^2.3.1
   shimmer: ^3.0.0
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_lints: ^3.0.0
@@ -31,3 +33,5 @@ flutter:
   uses-material-design: true
   assets:
     - assets/icons/
+flutter_intl:
+  enabled: true
