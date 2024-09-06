@@ -22,10 +22,16 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "about_text": MessageLookupByLibrary.simpleMessage(
+            "SimpleWeather es un proyecto personal desarrollado en Flutter que ofrece una interfaz sencilla y eficiente para consultar el clima actual. La aplicación también muestra pronósticos por hora y el estado del tiempo para los próximos 7 días, con detalles de temperatura mínima y máxima."),
+        "app_name": MessageLookupByLibrary.simpleMessage("SimpleWeather"),
+        "created_by": MessageLookupByLibrary.simpleMessage(
+            "Creado por Benjamín Moraga R."),
         "drawer_about_app":
             MessageLookupByLibrary.simpleMessage("Acerca de esta aplicación"),
         "drawer_config": MessageLookupByLibrary.simpleMessage("Configuración"),
         "drawer_temperature_unit":
-            MessageLookupByLibrary.simpleMessage("Unidad de Temperatura")
+            MessageLookupByLibrary.simpleMessage("Unidad de Temperatura"),
+        "made_in": MessageLookupByLibrary.simpleMessage("Hecho en Chile")
       };
 }

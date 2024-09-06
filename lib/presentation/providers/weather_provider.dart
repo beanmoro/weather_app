@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:weather_app/config/globals/globals.dart';
 import 'package:weather_app/domain/domain.dart';
 import 'package:weather_app/domain/services/geolocation_service.dart';
 import 'package:weather_app/infrastructure/mappers/location_mapper.dart';
@@ -32,7 +33,7 @@ class WeatherNotifier extends StateNotifier<WeatherState> {
   }
 
   Future<void> saveWeatherData() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    SharedPreferences localStorage = App.localStorage;
 
     String weatherJson = jsonEncode(WeatherMapper.entityToJson(state.weather!));
     String weatherDailyJson =
@@ -40,21 +41,23 @@ class WeatherNotifier extends StateNotifier<WeatherState> {
     String locationJson =
         jsonEncode(LocationMapper.entityToJson(state.currentLocation!));
 
-    sharedPreferences.setString("weather", weatherJson);
-    sharedPreferences.setString("weatherDaily", weatherDailyJson);
-    sharedPreferences.setString("location", locationJson);
-    sharedPreferences.setString("tempUnit", state.tempUnit.toString());
+    localStorage.setString("weather", weatherJson);
+    localStorage.setString("weatherDaily", weatherDailyJson);
+    localStorage.setString("location", locationJson);
+
+    localStorage.setString("tempUnit", state.tempUnit.toString());
+
+    String? tmpNt = localStorage.getString('tempUnit');
   }
 
   Future<void> loadLocalWeather() async {
     try {
-      SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
+      SharedPreferences localStorage = App.localStorage;
 
-      String? weatherEncoded = sharedPreferences.getString("weather");
-      String? weatherDailyEncoded = sharedPreferences.getString("weatherDaily");
-      String? locationEncoded = sharedPreferences.getString("location");
-      String? tempUnitString = sharedPreferences.getString("tempUnit");
+      String? weatherEncoded = localStorage.getString("weather");
+      String? weatherDailyEncoded = localStorage.getString("weatherDaily");
+      String? locationEncoded = localStorage.getString("location");
+      String? tempUnitString = localStorage.getString("tempUnit");
 
       if (weatherEncoded == null ||
           weatherDailyEncoded == null ||
@@ -79,7 +82,7 @@ class WeatherNotifier extends StateNotifier<WeatherState> {
       Location location = LocationMapper.jsonToEntity(locationJson);
 
       TempUnit tempUnit;
-      if (tempUnitString == 'fahrenheit') {
+      if (tempUnitString == 'TempUnit.fahrenheit') {
         tempUnit = TempUnit.fahrenheit;
       } else {
         tempUnit = TempUnit.celsius;
@@ -102,16 +105,18 @@ class WeatherNotifier extends StateNotifier<WeatherState> {
       var connectivityResult = await Connectivity().checkConnectivity();
 
       if (connectivityResult.contains(ConnectivityResult.none)) {
-        print('No internet connection!');
+        loadLocalWeather();
         return;
       }
 
       final location = await getCurrentLocation();
-
       if (location == null) return;
+
       final currentWeather =
           await weatherRepository.getCurrentWeather(location);
       final weatherWeek = await weatherRepository.getWeekWeather(location);
+
+      TempUnit tempUnit = getTempUnit();
 
       state = state.copyWith(
         isLoading: false,
@@ -182,14 +187,35 @@ class WeatherNotifier extends StateNotifier<WeatherState> {
     loadWeather();
   }
 
+  TempUnit _loadLocalTempUnit() {
+    try {
+      SharedPreferences localStorage = App.localStorage;
+
+      String? tempUnitString = localStorage.getString("tempUnit");
+
+      TempUnit tempUnit;
+      if (tempUnitString == 'fahrenheit') {
+        tempUnit = TempUnit.fahrenheit;
+      } else {
+        tempUnit = TempUnit.celsius;
+      }
+
+      return tempUnit;
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
   TempUnit getTempUnit() {
-    return state.tempUnit ?? TempUnit.celsius;
+    return state.tempUnit ?? _loadLocalTempUnit();
   }
 
   Future<void> setTempUnit(TempUnit tempUnit) async {
     state = state.copyWith(
       tempUnit: tempUnit,
     );
+
+    saveWeatherData();
   }
 }
 

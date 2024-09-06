@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
@@ -106,7 +105,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             const Divider(),
             ListTile(
               title: Text(S.current.drawer_about_app),
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).pop();
+                showAboutDialog(
+                    context: context,
+                    applicationIcon: ClipOval(
+                      child: Image.asset(
+                        'assets/imgs/icon.png',
+                        height: 64,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    applicationName: S.current.app_name,
+                    applicationVersion: '1.0.0',
+                    children: [
+                      Text(S.current.about_text),
+                      const SizedBox(height: 10),
+                      Text(S.current.created_by, style: textStyles.labelLarge),
+                      Text(S.current.made_in, style: textStyles.labelLarge),
+                    ]);
+              },
             ),
             const Divider(),
           ],

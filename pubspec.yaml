@@ -9,7 +9,6 @@ environment:
 dependencies:
   connectivity_plus: ^6.0.5
   dio: ^5.5.0+1
-  fl_chart: ^0.68.0
   flutter:
     sdk: flutter
   flutter_riverpod: ^2.5.1
@@ -33,5 +32,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/icons/
+    - assets/imgs/
 flutter_intl:
   enabled: true

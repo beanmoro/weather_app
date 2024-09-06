@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:weather_app/config/globals/globals.dart';
 import 'package:weather_app/config/router/app_router.dart';
 import 'package:weather_app/config/themes/app_theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:weather_app/generated/l10n.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await App.init();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(const ProviderScope(
     child: MainApp(),
   ));

@@ -50,6 +50,16 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `SimpleWeather`
+  String get app_name {
+    return Intl.message(
+      'SimpleWeather',
+      name: 'app_name',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Configuration`
   String get drawer_config {
     return Intl.message(
@@ -75,6 +85,36 @@ class S {
     return Intl.message(
       'About this app',
       name: 'drawer_about_app',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SimpleWeather is a personal project developed in Flutter that provides a simple and efficient interface for checking the current weather. The app also displays hourly forecasts and weather conditions for the next 7 days, including minimum and maximum temperatures.`
+  String get about_text {
+    return Intl.message(
+      'SimpleWeather is a personal project developed in Flutter that provides a simple and efficient interface for checking the current weather. The app also displays hourly forecasts and weather conditions for the next 7 days, including minimum and maximum temperatures.',
+      name: 'about_text',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Created by Benjamín Moraga R.`
+  String get created_by {
+    return Intl.message(
+      'Created by Benjamín Moraga R.',
+      name: 'created_by',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Made in Chile`
+  String get made_in {
+    return Intl.message(
+      'Made in Chile',
+      name: 'made_in',
       desc: '',
       args: [],
     );
