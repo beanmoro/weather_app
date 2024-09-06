@@ -1,7 +1,7 @@
-import 'package:weather_app/domain/domain.dart';
+import 'package:simpleweather/domain/domain.dart';
 import 'package:dio/dio.dart';
-import 'package:weather_app/infrastructure/mappers/weather_daily_mapper.dart';
-import 'package:weather_app/infrastructure/mappers/weather_mapper.dart';
+import 'package:simpleweather/infrastructure/mappers/weather_daily_mapper.dart';
+import 'package:simpleweather/infrastructure/mappers/weather_mapper.dart';
 
 class WeatherDatasourceImpl extends WeatherDatasource {
   late final Dio dio;

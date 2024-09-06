@@ -1,5 +1,5 @@
 import 'package:geolocator/geolocator.dart';
-import 'package:weather_app/config/helpers/parsing.dart';
+import 'package:simpleweather/config/helpers/parsing.dart';
 
 import '../../domain/domain.dart';
 

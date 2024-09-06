@@ -1,5 +1,5 @@
-import 'package:weather_app/config/helpers/parsing.dart';
-import 'package:weather_app/domain/domain.dart';
+import 'package:simpleweather/config/helpers/parsing.dart';
+import 'package:simpleweather/domain/domain.dart';
 
 class WeatherMapper {
   static Weather jsonToEntity(Map<String, dynamic> json) {

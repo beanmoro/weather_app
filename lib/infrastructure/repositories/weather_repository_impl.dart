@@ -1,5 +1,5 @@
-import 'package:weather_app/domain/domain.dart';
-import 'package:weather_app/infrastructure/datasources/weather_datasource_impl.dart';
+import 'package:simpleweather/domain/domain.dart';
+import 'package:simpleweather/infrastructure/datasources/weather_datasource_impl.dart';
 
 import '../../domain/entities/location.dart';
 

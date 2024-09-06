@@ -1,4 +1,4 @@
-import 'package:weather_app/domain/domain.dart';
+import 'package:simpleweather/domain/domain.dart';
 
 import '../../config/helpers/parsing.dart';
 

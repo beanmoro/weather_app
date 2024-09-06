@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:weather_app/config/globals/globals.dart';
-import 'package:weather_app/config/router/app_router.dart';
-import 'package:weather_app/config/themes/app_theme.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:simpleweather/config/globals/globals.dart';
+import 'package:simpleweather/config/router/app_router.dart';
+import 'package:simpleweather/config/themes/app_theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:weather_app/generated/l10n.dart';
+import 'package:simpleweather/generated/l10n.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await App.init();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+  FlutterNativeSplash.remove();
   runApp(const ProviderScope(
     child: MainApp(),
   ));

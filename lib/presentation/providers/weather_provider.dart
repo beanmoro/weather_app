@@ -3,14 +3,14 @@ import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:weather_app/config/globals/globals.dart';
-import 'package:weather_app/domain/domain.dart';
-import 'package:weather_app/domain/services/geolocation_service.dart';
-import 'package:weather_app/infrastructure/mappers/location_mapper.dart';
-import 'package:weather_app/infrastructure/mappers/weather_daily_mapper.dart';
-import 'package:weather_app/infrastructure/mappers/weather_mapper.dart';
-import 'package:weather_app/infrastructure/services/geolocation_service_impl.dart';
-import 'package:weather_app/presentation/providers/weather_repository_provider.dart';
+import 'package:simpleweather/config/globals/globals.dart';
+import 'package:simpleweather/domain/domain.dart';
+import 'package:simpleweather/domain/services/geolocation_service.dart';
+import 'package:simpleweather/infrastructure/mappers/location_mapper.dart';
+import 'package:simpleweather/infrastructure/mappers/weather_daily_mapper.dart';
+import 'package:simpleweather/infrastructure/mappers/weather_mapper.dart';
+import 'package:simpleweather/infrastructure/services/geolocation_service_impl.dart';
+import 'package:simpleweather/presentation/providers/weather_repository_provider.dart';
 
 enum TempUnit { celsius, fahrenheit }
 
@@ -46,8 +46,6 @@ class WeatherNotifier extends StateNotifier<WeatherState> {
     localStorage.setString("location", locationJson);
 
     localStorage.setString("tempUnit", state.tempUnit.toString());
-
-    String? tmpNt = localStorage.getString('tempUnit');
   }
 
   Future<void> loadLocalWeather() async {
@@ -67,8 +65,6 @@ class WeatherNotifier extends StateNotifier<WeatherState> {
             tempUnit: TempUnit.celsius,
           );
         }
-
-        print('>>>>> NO LOCAL DATA FOUND!');
         return;
       }
 
@@ -106,6 +102,7 @@ class WeatherNotifier extends StateNotifier<WeatherState> {
 
       if (connectivityResult.contains(ConnectivityResult.none)) {
         loadLocalWeather();
+
         return;
       }
 

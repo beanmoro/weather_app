@@ -4,13 +4,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:weather_app/config/constants/weather_code_icons.dart';
-import 'package:weather_app/config/helpers/conversor.dart';
-import 'package:weather_app/domain/entities/weather.dart';
-import 'package:weather_app/generated/l10n.dart';
-import 'package:weather_app/presentation/providers/weather_provider.dart';
-import 'package:weather_app/presentation/widgets/custom_radial_gradient.dart';
-import 'package:weather_app/presentation/widgets/widgets.dart';
+import 'package:simpleweather/config/constants/weather_code_icons.dart';
+import 'package:simpleweather/config/helpers/conversor.dart';
+import 'package:simpleweather/domain/entities/weather.dart';
+import 'package:simpleweather/generated/l10n.dart';
+import 'package:simpleweather/presentation/providers/weather_provider.dart';
+import 'package:simpleweather/presentation/widgets/custom_radial_gradient.dart';
+import 'package:simpleweather/presentation/widgets/widgets.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -181,11 +181,6 @@ class _WeatherWeek extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentWeatherState = ref.watch(weatherProvider);
-
-    // final currentMinIndex =
-    //     ref.watch(weatherProvider.notifier).getCurrentMinIndex();
-
-    String tag = Localizations.maybeLocaleOf(context)!.toLanguageTag();
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 1.0),
